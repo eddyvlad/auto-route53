@@ -1,2 +1,4 @@
 /node_modules/
-/eddyhidayat-ddns.zip
+lambda-deployment.zip
+/dist/
+*.tgz

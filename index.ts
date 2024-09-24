@@ -99,7 +99,7 @@ export const handler = async (event: DdnsEvent) => {
     // Only update if the IP has changed
     if (currentIp !== newIp) {
       const status = await updateDnsRecord(newIp);
-      console.log(`Successfully changed recordSet to ${newIp}. Status: ${status}`);
+      console.log(`Successfully changed recordSet from ${currentIp} to ${newIp}. Status: ${status}`);
 
       return {
         statusCode: 200,
