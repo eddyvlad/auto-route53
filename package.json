@@ -2,9 +2,10 @@
   "name": "eddyhidayat-ddns",
   "version": "1.0.0",
   "description": "My DDNS implementation for AWS Lambda",
-  "main": "index.js",
+  "main": "index.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.ts",
+    "package": "zip -r eddyhidayat-ddns.zip index.ts node_modules package.json"
   },
   "author": "",
   "license": "ISC",
