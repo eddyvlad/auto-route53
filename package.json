@@ -1,0 +1,14 @@
+{
+  "name": "eddyhidayat-ddns",
+  "version": "1.0.0",
+  "description": "My DDNS implementation for AWS Lambda",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@aws-sdk/client-route-53": "^3.654.0"
+  }
+}
