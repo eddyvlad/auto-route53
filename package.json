@@ -1,19 +1,22 @@
 {
-  "name": "eddyhidayat-ddns",
+  "name": "auto-route53",
   "version": "1.0.0",
-  "description": "DDNS implementation for AWS Lambda",
+  "description": "A serverless Dynamic DNS (DDNS) solution built on AWS Lambda and Route 53. Automatically updates DNS records for dynamic IP addresses.",
   "main": "dist/index.js",
   "scripts": {
     "start": "esr index.ts",
-    "build": "tsc",
-    "deploy": "aws lambda update-function-code --function-name eddyhidayat-ddns --zip-file fileb://lambda-deployment.zip",
+    "clean": "rm -rf dist",
+    "build": "npm run clean && tsc",
+    "deploy": "esr scripts/deploy.ts",
     "test": "jest",
-    "zip": "npm pack && tar -xzf eddyhidayat-ddns-*.tgz && cd package && mv dist/* ./ && rm -rf ./dist && npm install --omit=dev && zip -r ../lambda-deployment.zip . && cd ../ && rm -rf ./package && rm eddyhidayat-ddns-*.tgz"
+    "zip": "esr scripts/pack-zip.ts",
+    "generate-token": "esr scripts/generate-token.ts"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "eddyvlad",
+  "license": "MIT",
   "dependencies": {
-    "@aws-sdk/client-route-53": "^3.654.0"
+    "@aws-sdk/client-route-53": "^3.654.0",
+    "dotenv": "^16.4.5"
   },
   "files": [
     "dist/",
@@ -21,11 +24,17 @@
     "package.json"
   ],
   "devDependencies": {
+    "@aws-sdk/client-lambda": "^3.658.0",
+    "@eslint/js": "^9.11.1",
+    "@types/eslint__js": "^8.42.3",
     "@types/jest": "^29.5.13",
     "esbuild": "^0.24.0",
     "esbuild-runner": "^2.2.2",
+    "eslint": "^9.11.1",
     "jest": "^29.7.0",
     "ts-jest": "^29.2.5",
-    "typescript": "^5.6.2"
+    "ts-node": "^10.9.2",
+    "typescript": "^5.6.2",
+    "typescript-eslint": "^8.7.0"
   }
 }

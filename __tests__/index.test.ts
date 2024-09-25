@@ -28,6 +28,7 @@ describe('DDNS handler', () => {
     const event = {
       hostname: '',
       myip: '',
+      authToken: '',
     };
 
     const result = await handler(event);
@@ -35,15 +36,16 @@ describe('DDNS handler', () => {
       statusCode: 400,
       body: JSON.stringify({
         success: false,
-        error: 'Please provide hostname and IP',
+        error: 'Please provide \'hostname\', \'myip\', \'authToken\'',
       }),
     });
   });
 
   it('should not update DNS if IP has not changed', async () => {
     const event = {
-      hostname: 'diskstation',
+      hostname: 'my-nas',
       myip: '1.2.3.4',
+      authToken: 'test-token',
     };
 
     // Mock the getCurrentRecord function to return the same IP
@@ -66,8 +68,9 @@ describe('DDNS handler', () => {
 
   it('should update DNS if IP has changed', async () => {
     const event = {
-      hostname: 'diskstation',
+      hostname: 'my-nas',
       myip: '4.3.2.1',
+      authToken: 'test-token',
     };
 
     // Mock the getCurrentRecord function to return a different IP
@@ -88,6 +91,7 @@ describe('DDNS handler', () => {
       statusCode: 200,
       body: JSON.stringify({
         success: true,
+        message: 'DNS record updated successfully',
         status: 'PENDING',
       }),
     });
@@ -95,8 +99,9 @@ describe('DDNS handler', () => {
 
   it('should handle errors from Route53', async () => {
     const event = {
-      hostname: 'diskstation',
+      hostname: 'my-nas',
       myip: '4.3.2.1',
+      authToken: 'test-token',
     };
 
     // Mock Route53 client to throw an error
