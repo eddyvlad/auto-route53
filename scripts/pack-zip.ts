@@ -1,60 +1,93 @@
 import { execSync } from 'node:child_process';
 import * as path from 'node:path';
 import npmPackageJson from '../package.json';
+import { ConsoleLogger } from '../src/services/console-logger';
+import { DEPLOYMENT_ZIP_NAME } from './constants/shared.constants';
+import { removeEmptyDirs } from './helpers/remove-empty-dirs';
+import { deleteFile } from './helpers/delete-file';
 
+const logger = new ConsoleLogger('pack-zip');
 const packageName = npmPackageJson.name;
 const currentWorkingDirectory = process.cwd();
 const unpackDirectory = path.join(currentWorkingDirectory, 'package');
 const startTime = new Date().getTime();
 
-function runCommand(command: string, options?: { cwd?: string }): void {
+const runCommand = (command: string, options?: { cwd?: string }): void => {
   try {
-    console.info(`Executing: ${command}`);
+    logger.info(`Executing: ${command}`);
     execSync(command, { stdio: 'inherit', ...options });
   } catch (error) {
-    console.error(`Error while executing: ${command}`);
+    logger.error(`Error while executing: ${command}`);
     throw error;
   }
-}
+};
 
-function cleanUp(): void {
+const cleanUp = (): void => {
   try {
-    console.info('Cleaning up...');
+    logger.info('Cleaning up...');
     runCommand(`rm -rf ${unpackDirectory}`);
     runCommand(`rm -f ${packageName}-*.tgz`);
   } catch (error) {
-    console.error('Error during cleanup');
+    logger.error('Error during cleanup');
     throw error;
   }
-}
+};
 
-function getElapsedTime(): string {
-  return `[Elapsed: ${new Date().getTime() - startTime}ms]`;
-}
+const getElapsedTime = (): string => `[Elapsed: ${new Date().getTime() - startTime}ms]`;
+
+const cleanArtifacts = (): void => {
+  try {
+    logger.info('Cleaning up artifacts...');
+
+    // Remove package-lock.json
+    const packageLockPath = path.join(unpackDirectory, 'package-lock.json');
+    deleteFile(packageLockPath);
+    logger.info('Removed package-lock.json');
+
+    // Remove *.map files
+    const mapFiles = execSync(`find ${unpackDirectory} -name "*.map"`, { encoding: 'utf8' }).split('\n');
+    mapFiles.forEach((mapFile) => {
+      if (mapFile.trim()) {
+        deleteFile(mapFile);
+        logger.info(`Removed: ${mapFile}`);
+      }
+    });
+
+    // Remove empty directories in the unpack directory
+    removeEmptyDirs(unpackDirectory);
+    logger.info('Removed empty directories');
+
+  } catch (error) {
+    logger.error('Error during artifact cleanup:', error);
+    throw error;
+  }
+};
 
 try {
-  console.info('Building');
+  logger.info('Building');
   runCommand('npm run build');
 
-  console.info(`Packing ${getElapsedTime()}`);
+  logger.info(`Packing ${getElapsedTime()}`);
   runCommand('npm pack');
 
-  console.info(`Unpacking ${getElapsedTime()}`);
+  logger.info(`Unpacking ${getElapsedTime()}`);
   runCommand(`tar -xzf ${packageName}-*.tgz`);
 
-  console.info(`Preparing ${getElapsedTime()}`);
+  logger.info(`Preparing ${getElapsedTime()}`);
   runCommand('mv dist/* ./', { cwd: unpackDirectory });
   runCommand('rm -rf ./dist', { cwd: unpackDirectory });
   runCommand('npm install --omit=dev', { cwd: unpackDirectory });
 
-  console.info(`Zipping ${getElapsedTime()}`);
-  runCommand('zip -r ../lambda-deployment.zip .', { cwd: unpackDirectory });
+  cleanArtifacts();
+
+  logger.info(`Zipping ${getElapsedTime()}`);
+  runCommand(`zip -r ../${DEPLOYMENT_ZIP_NAME} .`, { cwd: unpackDirectory });
 
   cleanUp();
 
-  console.info(`Done ${getElapsedTime()}`);
+  logger.info(`Done ${getElapsedTime()}`);
 } catch (error) {
-  console.error('Process failed.', error);
+  logger.error('Process failed.', error);
   cleanUp();
   process.exit(1);
 }

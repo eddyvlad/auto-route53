@@ -1,5 +1,5 @@
-import { DNSService } from '../../lib/dns-service';
-import { DNSServiceConfig } from '../../lib/dns-service.types';
+import { DNSService } from '../../src/services/dns-service';
+import { DNSServiceConfig } from '../../src/services/dns-service.types';
 import {
   Route53Client,
   ChangeResourceRecordSetsCommand,

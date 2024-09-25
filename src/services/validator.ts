@@ -21,7 +21,7 @@ export class Validator {
       throw new Error(`Please provide '${errorFields.join('\', \'')}'`);
     }
 
-    if (event.authToken !== process.env.AUTH_TOKEN) {
+    if (event.authToken !== process.env.APP_AUTH_TOKEN) {
       throw new Error('Unauthorized');
     }
   }

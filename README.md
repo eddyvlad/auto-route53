@@ -15,7 +15,7 @@ The application is written in TypeScript, built with AWS SDK v3, and deployed on
   - In case your endpoint url is leaked, without the right auth token, a malicious user cannot manipulate your DNS record.
   - It has built in token generator as well so that you can easily rotate your auth token for enhanced security.
 - Written in TypeScript for type safety & it is typed extensively.
-- Efficient packaging and deployment scripts using `npm run zip` and `npm run deploy`.
+- Efficient packaging and deployment to AWS Lambda using `npm run zip` and `npm run deploy`.
 - Unit tests using Jest for maintaining code quality.
 
 ## Running this app on AWS Lambda
@@ -70,7 +70,26 @@ You also need the appropriate policies in your AWS IAM account to be able to dep
 }
 ```
 
-Note: The "lambda:CreateFunction" is optional. It is only needed if you want this application to automatically create the Lambda function for you.
+#### Note
+
+The "lambda:CreateFunction" is optional. It is only needed if you want this application to automatically create the Lambda function for you.
+
+But in order to create a Lambda function, you also need permission to assign role to the Lambda function. So you will need the following as well.
+
+```json
+{
+  "Effect": "Allow",
+  "Action": [
+    "iam:CreateRole",
+    "iam:AttachRolePolicy",
+    "iam:GetRole",
+    "iam:PassRole"
+  ],
+  "Resource": "arn:aws:iam::<account-id>:role/*"
+}
+```
+
+Note: If you think the role is too permissive due to the `*` wildcard, use `arn:aws:iam::<account-id>:role/lambda-route53-execution-role` but the `lambda-route53-execution-role` value should be the same as the `LAMBDA_EXECUTION_ROLE_NAME` value in `.env`.
 
 ### Installation
 
@@ -114,15 +133,15 @@ The project includes an automated packaging and deployment workflow. It creates 
 - Pack the files into `lambda-deployment.zip` (excluding unnecessary files like dev dependencies).
   - You can upload this zip directly to your Lambda function via the web console if you want.
 - Deploy the package to your AWS Lambda function
-  - This will check if you have existing Lambda function with the name configured in your `.env` file. 
-  - If you don't have such function, it will create one for you. 
+  - This will check if you have existing Lambda function with the name configured in your `.env` file.
+  - If you don't have such function, it will create one for you.
   - If the function already exists, it will update the code for you.
 
 ## Rationale
 
 **Why is it overbuilt?**
 
-I don't mind that it is overbuilt because it's meant for me to keep up with the coding standards & practices.
+I don't mind that it is overbuilt because it's meant for me to keep up with the coding standards, practices & various design patterns.
 Besides, I'm very used to implementing codes in a way that is easily transferable to a junior software engineer and the modularity allows for multiple engineers to work on the same project concurrently.
 This is a habit I picked up from leading a team of software engineers.
 
@@ -140,3 +159,12 @@ The same reason as to why it is overbuilt.
 **Why have both esbuild & ts-node installed?**
 
 I'm experimenting with esbuild & ts-node is needed to parse `jest.config.ts`.
+
+**Why not build using esbuild?**
+
+Esbuild requires a plugin to do typecheck while building. I don't want to add this plugin because at the moment, I'm only using it to run typescript files.
+
+## Known Issues
+
+Currently this project had been developed on MacOS 15 with NodeJS v20.10.0.
+It is not meant to run on Windows or Linux. Feel free to contribute to make this compatible for multiple OS.

@@ -4,10 +4,9 @@
   "description": "A serverless Dynamic DNS (DDNS) solution built on AWS Lambda and Route 53. Automatically updates DNS records for dynamic IP addresses.",
   "main": "dist/index.js",
   "scripts": {
-    "start": "esr index.ts",
     "clean": "rm -rf dist",
     "build": "npm run clean && tsc",
-    "deploy": "esr scripts/deploy.ts",
+    "deploy": "esr scripts/deploy/deploy.ts",
     "test": "jest",
     "zip": "esr scripts/pack-zip.ts",
     "generate-token": "esr scripts/generate-token.ts"
@@ -24,6 +23,7 @@
     "package.json"
   ],
   "devDependencies": {
+    "@aws-sdk/client-iam": "^3.658.0",
     "@aws-sdk/client-lambda": "^3.658.0",
     "@eslint/js": "^9.11.1",
     "@types/eslint__js": "^8.42.3",

@@ -1,5 +1,5 @@
-import { Validator } from '../../lib/validator';
-import { APIGatewayProxyEvent } from '../../lib/validator.types';
+import { Validator } from '../../src/services/validator';
+import { APIGatewayProxyEvent } from '../../src/services/validator.types';
 
 describe('Validator', () => {
   let validator: Validator;
