@@ -11,18 +11,19 @@ import { Command } from '../../../interfaces/command.interface';
 export class AttachRolePolicyCommand implements Command {
   constructor(
     private readonly client: IAMClient,
-    private readonly input: AWSAttachRolePolicyCommandInput,
-  ) {
-  }
+    private readonly input: AWSAttachRolePolicyCommandInput
+  ) {}
 
   public async execute(): Promise<AWSAttachRolePolicyCommandOutput> {
     return this.client.send(new AWSAttachRolePolicyCommand(this.input));
   }
 
   async undo(): Promise<AWSDetachRolePolicyCommandOutput> {
-    return this.client.send(new AWSDetachRolePolicyCommand({
-      RoleName: this.input.RoleName,
-      PolicyArn: this.input.PolicyArn,
-    }));
+    return this.client.send(
+      new AWSDetachRolePolicyCommand({
+        RoleName: this.input.RoleName,
+        PolicyArn: this.input.PolicyArn,
+      })
+    );
   }
 }

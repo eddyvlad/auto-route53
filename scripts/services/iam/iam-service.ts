@@ -1,19 +1,7 @@
-import type {
-  CreateLambdaRoleOutput,
-  IamServiceConfig,
-} from './iam-service.types';
-import {
-  EntityAlreadyExistsException,
-  IAMClient,
-} from '@aws-sdk/client-iam';
-import type {
-  CreateRoleCommandOutput,
-  GetRoleCommandOutput,
-} from '@aws-sdk/client-iam';
-import {
-  AWS_MANAGED_POLICIES,
-  LAMBDA_TRUST_POLICY,
-} from './constants/aws-policies.constants';
+import type { CreateLambdaRoleOutput, IamServiceConfig } from './iam-service.types';
+import { EntityAlreadyExistsException, IAMClient } from '@aws-sdk/client-iam';
+import type { CreateRoleCommandOutput, GetRoleCommandOutput } from '@aws-sdk/client-iam';
+import { AWS_MANAGED_POLICIES, LAMBDA_TRUST_POLICY } from './constants/aws-policies.constants';
 import { CreateRoleCommand } from './commands/create-role-command';
 import { AttachRolePolicyCommand } from './commands/attach-role-policy-command';
 import { GetRoleCommand } from './commands/get-role-command';
@@ -43,7 +31,6 @@ export class IamService {
 
       roleCommandOutput = await createRoleCommand.execute();
       createRoleOutput.createRoleCommand = createRoleCommand;
-
     } catch (error: unknown) {
       // If the error is not 'EntityAlreadyExists', rethrow it
       if (!(error instanceof EntityAlreadyExistsException)) {
@@ -80,10 +67,9 @@ export class IamService {
       ];
 
       // Execute both policy attachment commands concurrently
-      await Promise.all(attachPolicies.map(policy => policy.execute()));
+      await Promise.all(attachPolicies.map((policy) => policy.execute()));
 
       return createRoleOutput as CreateLambdaRoleOutput;
-
     } catch (error: unknown) {
       // Undo role creation if attaching policies fails
       if (createRoleOutput.createRoleCommand) {

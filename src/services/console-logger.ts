@@ -5,8 +5,7 @@ import { LogLevel } from '../enums/log-level.enum';
 export class ConsoleLogger implements Logger {
   private static logLevel: LogLevel = LogLevel.INFO;
 
-  constructor(private readonly context?: string) {
-  }
+  constructor(private readonly context?: string) {}
 
   public static setLogLevel(level: LogLevel) {
     ConsoleLogger.logLevel = level;

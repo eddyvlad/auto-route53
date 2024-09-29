@@ -59,10 +59,7 @@ const updateEnvFile = (newToken: string): void => {
   logger.info(`APP_AUTH_TOKEN updated in .env file: ${newToken}`);
 };
 
-const {
-  tokenLength,
-  writeToEnv,
-} = getArgs();
+const { tokenLength, writeToEnv } = getArgs();
 const secretToken = generateToken(tokenLength);
 if (writeToEnv) {
   updateEnvFile(secretToken);

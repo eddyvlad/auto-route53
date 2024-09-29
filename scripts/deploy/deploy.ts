@@ -1,26 +1,21 @@
 import * as fs from 'node:fs';
 import { services } from './services';
-import {
-  DEPLOYMENT_ZIP_NAME,
-  LAMBDA_RUNTIME,
-} from '../constants/shared.constants';
+import { DEPLOYMENT_ZIP_NAME, LAMBDA_RUNTIME } from '../constants/shared.constants';
 import { getEnvVars } from './env-vars';
 
-const {
-  logger,
-  lambdaService,
-  iamService,
-  configService,
-} = services;
+const { logger, lambdaService, iamService, configService } = services;
 
 const createLambda = async (zipFilePath: string) => {
   const createRoleResult = await iamService.createLambdaExecutionRole(configService.getLambdaExecutionRoleName());
   try {
-    await lambdaService.createLambdaFunction({
-      roleArn: createRoleResult.roleArn,
-      zipFilePath,
-      runtime: LAMBDA_RUNTIME,
-    }, getEnvVars());
+    await lambdaService.createLambdaFunction(
+      {
+        roleArn: createRoleResult.roleArn,
+        zipFilePath,
+        runtime: LAMBDA_RUNTIME,
+      },
+      getEnvVars()
+    );
   } catch (error) {
     logger.error('Error creating Lambda function:', error);
     if (createRoleResult.createRoleCommand) {

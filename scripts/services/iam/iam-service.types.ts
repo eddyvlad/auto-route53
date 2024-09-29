@@ -6,7 +6,7 @@ export interface IamServiceConfig {
 }
 
 export interface CreateLambdaRoleOutput {
-  createRoleCommand?: CreateRoleCommand,
-  getRoleCommand?: GetRoleCommand,
-  roleArn: string
+  createRoleCommand?: CreateRoleCommand;
+  getRoleCommand?: GetRoleCommand;
+  roleArn: string;
 }

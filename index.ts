@@ -36,7 +36,9 @@ export const handler = async (event: APIGatewayProxyEvent) => {
     if (currentIp !== newIp) {
       const status = await dnsService.updateDnsRecord(newIp);
       logger.info(`Successfully changed recordSet from ${currentIp} to ${newIp}. Status: ${status}`);
-      return ResponseService.success('DNS record updated successfully', { status: status ?? 200 });
+      return ResponseService.success('DNS record updated successfully', {
+        status: status ?? 200,
+      });
     } else {
       logger.info(`No change required, IP is already ${newIp}`);
       return ResponseService.success('No change required');

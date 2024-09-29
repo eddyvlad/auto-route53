@@ -56,7 +56,6 @@ const cleanArtifacts = (): void => {
     // Remove empty directories in the unpack directory
     removeEmptyDirs(unpackDirectory);
     logger.info('Removed empty directories');
-
   } catch (error) {
     logger.error('Error during artifact cleanup:', error);
     throw error;

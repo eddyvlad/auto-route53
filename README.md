@@ -73,12 +73,7 @@ The `lambda:CreateFunction` permission is only needed if you want this applicati
 ```json
 {
   "Effect": "Allow",
-  "Action": [
-    "iam:CreateRole",
-    "iam:AttachRolePolicy",
-    "iam:GetRole",
-    "iam:PassRole"
-  ],
+  "Action": ["iam:CreateRole", "iam:AttachRolePolicy", "iam:GetRole", "iam:PassRole"],
   "Resource": "arn:aws:iam::<account-id>:role/*"
 }
 ```
@@ -122,11 +117,12 @@ The project includes a streamlined packaging and deployment workflow. This creat
    ```
 
    This process will:
-  - Build the project.
-  - Pack necessary files into `lambda-deployment.zip`, excluding dev dependencies and other unnecessary files.
-  - Deploy the package to AWS Lambda.
-    - If no existing Lambda function is found, it creates one.
-    - If the Lambda function already exists, it updates the function's code.
+
+- Build the project.
+- Pack necessary files into `lambda-deployment.zip`, excluding dev dependencies and other unnecessary files.
+- Deploy the package to AWS Lambda.
+  - If no existing Lambda function is found, it creates one.
+  - If the Lambda function already exists, it updates the function's code.
 
 ## Rationale
 

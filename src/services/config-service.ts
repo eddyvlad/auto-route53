@@ -17,10 +17,11 @@ export class ConfigService {
     this.config = {
       hostedZoneId: config?.hostedZoneId ?? process.env.ROUTE53_HOSTED_ZONE_ID,
       dnsRecordName: config?.dnsRecordName ?? process.env.ROUTE53_DNS_RECORD_NAME,
-      dnsRecordTtl: config?.dnsRecordTtl ?? parseInt(process.env.ROUTE53_DNS_RECORD_TTL ?? DEFAULT_CONFIG.ROUTE53_DNS_RECORD_TTL),
-      dnsRecordType: config?.dnsRecordType ?? process.env.ROUTE53_DNS_RECORD_TYPE as ResourceRecordSet['Type'],
+      dnsRecordTtl:
+        config?.dnsRecordTtl ?? parseInt(process.env.ROUTE53_DNS_RECORD_TTL ?? DEFAULT_CONFIG.ROUTE53_DNS_RECORD_TTL),
+      dnsRecordType: config?.dnsRecordType ?? (process.env.ROUTE53_DNS_RECORD_TYPE as ResourceRecordSet['Type']),
       authToken: config?.authToken ?? process.env.APP_AUTH_TOKEN,
-      logLevel: config?.logLevel ?? parseInt(process.env.APP_LOG_LEVEL ?? DEFAULT_CONFIG.APP_LOG_LEVEL) as LogLevel,
+      logLevel: config?.logLevel ?? (parseInt(process.env.APP_LOG_LEVEL ?? DEFAULT_CONFIG.APP_LOG_LEVEL) as LogLevel),
       lambdaAwsRegion: config?.lambdaAwsRegion ?? process.env.LAMBDA_AWS_REGION,
       lambdaFunctionName: config?.lambdaFunctionName ?? process.env.LAMBDA_FUNCTION_NAME,
       lambdaExecutionRoleName: config?.lambdaExecutionRoleName ?? process.env.LAMBDA_EXECUTION_ROLE_NAME,

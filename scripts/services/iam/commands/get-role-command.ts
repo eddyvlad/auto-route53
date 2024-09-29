@@ -9,9 +9,8 @@ import { Command } from '../../../interfaces/command.interface';
 export class GetRoleCommand implements Command {
   constructor(
     private readonly client: IAMClient,
-    private readonly input: AWSGetRoleCommandInput,
-  ) {
-  }
+    private readonly input: AWSGetRoleCommandInput
+  ) {}
 
   async execute(): Promise<AWSGetRoleCommandOutput> {
     return await this.client.send(new AWSGetRoleCommand(this.input));

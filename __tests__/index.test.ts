@@ -23,7 +23,7 @@ describe('DDNS handler', () => {
       statusCode: 400,
       body: JSON.stringify({
         success: false,
-        error: 'Please provide \'hostname\', \'myip\', \'authToken\'',
+        error: "Please provide 'hostname', 'myip', 'authToken'",
       }),
     });
   });
@@ -37,9 +37,11 @@ describe('DDNS handler', () => {
 
     // Mock the getCurrentRecord function to return the same IP
     mockRoute53Client.prototype.send = jest.fn().mockResolvedValue({
-      ResourceRecordSets: [{
-        ResourceRecords: [{ Value: '1.2.3.4' }],
-      }],
+      ResourceRecordSets: [
+        {
+          ResourceRecords: [{ Value: '1.2.3.4' }],
+        },
+      ],
     });
 
     const result = await handler(event);
@@ -64,9 +66,11 @@ describe('DDNS handler', () => {
     mockRoute53Client.prototype.send = jest
       .fn()
       .mockResolvedValueOnce({
-        ResourceRecordSets: [{
-          ResourceRecords: [{ Value: '1.2.3.4' }],
-        }],
+        ResourceRecordSets: [
+          {
+            ResourceRecords: [{ Value: '1.2.3.4' }],
+          },
+        ],
       }) // First call returns the current IP
       .mockResolvedValueOnce({
         ChangeInfo: { Status: 'PENDING' },

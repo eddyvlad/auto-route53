@@ -1,10 +1,6 @@
 import { DNSService } from '../../src/services/dns-service';
 import { DNSServiceConfig } from '../../src/services/dns-service.types';
-import {
-  ChangeBatch,
-  ChangeResourceRecordSetsCommand,
-  ListResourceRecordSetsCommand,
-} from '@aws-sdk/client-route-53';
+import { ChangeBatch, ChangeResourceRecordSetsCommand, ListResourceRecordSetsCommand } from '@aws-sdk/client-route-53';
 
 // Mocking Route53Client and its send method
 const mockSend = jest.fn(); // Create a mock function for send
@@ -37,9 +33,7 @@ describe('DNSService', () => {
 
   it('should fetch the current DNS record', async () => {
     const mockResponse = {
-      ResourceRecordSets: [
-        { ResourceRecords: [{ Value: '1.1.1.1' }] },
-      ],
+      ResourceRecordSets: [{ ResourceRecords: [{ Value: '1.1.1.1' }] }],
     };
 
     // Mock the send method to resolve with mockResponse
@@ -61,7 +55,7 @@ describe('DNSService', () => {
     expect(ChangeResourceRecordSetsCommand).toHaveBeenCalledWith(
       expect.objectContaining({
         ChangeBatch: expect.any(Object) as ChangeBatch,
-      }),
+      })
     );
   });
 });

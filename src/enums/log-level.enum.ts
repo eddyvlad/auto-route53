@@ -3,5 +3,5 @@ export enum LogLevel {
   INFO = 2,
   WARN = 3,
   ERROR = 4,
-  NONE = 5
+  NONE = 5,
 }

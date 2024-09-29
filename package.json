@@ -6,6 +6,8 @@
   "scripts": {
     "clean": "rm -rf dist",
     "build": "npm run clean && tsc",
+    "prettier": "prettier . --write",
+    "prettier:check": "prettier . --check .",
     "lint": "eslint",
     "test": "jest",
     "generate-token": "esr scripts/generate-token.ts",
