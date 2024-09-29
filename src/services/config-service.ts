@@ -2,6 +2,7 @@ import * as dotenv from 'dotenv';
 import type { ConfigOptions } from './config-service.types';
 import type { ResourceRecordSet } from '@aws-sdk/client-route-53/dist-types/models/models_0';
 import { LogLevel } from '../enums/log-level.enum';
+import { DEFAULT_CONFIG } from '../constants/defaults.constant';
 
 export class ConfigService {
   private readonly config: ConfigOptions;
@@ -14,15 +15,15 @@ export class ConfigService {
     // 1. Explicit config values passed to constructor.
     // 2. Environment variables from .env.
     this.config = {
-      hostedZoneId: config?.hostedZoneId || process.env.ROUTE53_HOSTED_ZONE_ID,
-      dnsRecordName: config?.dnsRecordName || process.env.ROUTE53_DNS_RECORD_NAME,
-      dnsRecordTtl: config?.dnsRecordTtl || parseInt(process.env.ROUTE53_DNS_RECORD_TTL || '86400'),
-      dnsRecordType: config?.dnsRecordType || process.env.ROUTE53_DNS_RECORD_TYPE as ResourceRecordSet['Type'],
-      authToken: config?.authToken || process.env.APP_AUTH_TOKEN,
-      logLevel: config?.logLevel || parseInt(process.env.APP_LOG_LEVEL) as LogLevel,
-      lambdaAwsRegion: config?.lambdaAwsRegion || process.env.LAMBDA_AWS_REGION,
-      lambdaFunctionName: config?.lambdaFunctionName || process.env.LAMBDA_FUNCTION_NAME,
-      lambdaExecutionRoleName: config?.lambdaExecutionRoleName || process.env.LAMBDA_EXECUTION_ROLE_NAME,
+      hostedZoneId: config?.hostedZoneId ?? process.env.ROUTE53_HOSTED_ZONE_ID,
+      dnsRecordName: config?.dnsRecordName ?? process.env.ROUTE53_DNS_RECORD_NAME,
+      dnsRecordTtl: config?.dnsRecordTtl ?? parseInt(process.env.ROUTE53_DNS_RECORD_TTL ?? DEFAULT_CONFIG.ROUTE53_DNS_RECORD_TTL),
+      dnsRecordType: config?.dnsRecordType ?? process.env.ROUTE53_DNS_RECORD_TYPE as ResourceRecordSet['Type'],
+      authToken: config?.authToken ?? process.env.APP_AUTH_TOKEN,
+      logLevel: config?.logLevel ?? parseInt(process.env.APP_LOG_LEVEL ?? DEFAULT_CONFIG.APP_LOG_LEVEL) as LogLevel,
+      lambdaAwsRegion: config?.lambdaAwsRegion ?? process.env.LAMBDA_AWS_REGION,
+      lambdaFunctionName: config?.lambdaFunctionName ?? process.env.LAMBDA_FUNCTION_NAME,
+      lambdaExecutionRoleName: config?.lambdaExecutionRoleName ?? process.env.LAMBDA_EXECUTION_ROLE_NAME,
     };
   }
 
@@ -40,7 +41,7 @@ export class ConfigService {
    * Defaults to 86400
    */
   public getDnsRecordTtl(): number {
-    return this.config.dnsRecordTtl || 86400;
+    return this.config.dnsRecordTtl;
   }
 
   public getDnsRecordType(): ResourceRecordSet['Type'] {
@@ -69,7 +70,6 @@ export class ConfigService {
   }
 
   public getLogLevel(): LogLevel {
-    if (!this.config.logLevel) throw new Error('logLevel is not configured');
     return this.config.logLevel;
   }
 }

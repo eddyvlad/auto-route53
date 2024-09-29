@@ -1,6 +1,7 @@
 import { DNSService } from '../../src/services/dns-service';
 import { DNSServiceConfig } from '../../src/services/dns-service.types';
 import {
+  ChangeBatch,
   ChangeResourceRecordSetsCommand,
   ListResourceRecordSetsCommand,
 } from '@aws-sdk/client-route-53';
@@ -59,7 +60,7 @@ describe('DNSService', () => {
     expect(result).toBe('PENDING');
     expect(ChangeResourceRecordSetsCommand).toHaveBeenCalledWith(
       expect.objectContaining({
-        ChangeBatch: expect.any(Object),
+        ChangeBatch: expect.any(Object) as ChangeBatch,
       }),
     );
   });

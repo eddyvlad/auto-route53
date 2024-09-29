@@ -7,22 +7,24 @@ import {
   ResourceNotFoundException,
   UpdateFunctionCodeCommand,
   UpdateFunctionConfigurationCommand,
+  waitUntilFunctionUpdated,
 } from '@aws-sdk/client-lambda';
+import { WaiterResult } from '@smithy/util-waiter';
 import type {
   CreateLambdaInput,
   LambdaServiceConfig,
-  UpdateLambdaCodeInput,
-  UpdateLambdaEnvironmentInput,
 } from './lambda-service.types';
 import { Logger } from '../../../src/interfaces/logger.interface';
 
 export class LambdaService {
   private lambdaClient: LambdaClient;
   private readonly logger: Logger;
+  private readonly functionName: string;
 
   constructor(config: LambdaServiceConfig) {
     this.logger = config.logger;
     this.lambdaClient = new LambdaClient({ region: config.region });
+    this.functionName = config.functionName;
   }
 
   /**
@@ -34,10 +36,10 @@ export class LambdaService {
   public async createLambdaFunction(input: CreateLambdaInput, envVars: Record<string, string>): Promise<void> {
     try {
       const createFunctionResponse = await this.lambdaClient.send(new CreateFunctionCommand({
-        FunctionName: input.functionName,
+        FunctionName: this.functionName,
         Role: input.roleArn,
         Runtime: input.runtime,
-        Handler: input.handler || 'index.handler',
+        Handler: input.handler ?? 'index.handler',
         Code: {
           ZipFile: fs.readFileSync(input.zipFilePath),
         },
@@ -55,13 +57,13 @@ export class LambdaService {
 
   /**
    * Update Lambda code
-   * @param input
+   * @param zipFilePath
    */
-  public async updateLambdaCode(input: UpdateLambdaCodeInput): Promise<void> {
+  public async updateLambdaCode(zipFilePath: string): Promise<void> {
     try {
       const updateCodeResponse = await this.lambdaClient.send(new UpdateFunctionCodeCommand({
-        FunctionName: input.functionName,
-        ZipFile: fs.readFileSync(input.zipFilePath),
+        FunctionName: this.functionName,
+        ZipFile: fs.readFileSync(zipFilePath),
       }));
       this.logger.log('Lambda code updated:', updateCodeResponse.FunctionArn);
     } catch (error) {
@@ -72,13 +74,12 @@ export class LambdaService {
 
   /**
    * Update Lambda environment variables
-   * @param input
    * @param envVars
    */
-  public async updateLambdaEnvironment(input: UpdateLambdaEnvironmentInput, envVars: Record<string, string>): Promise<void> {
+  public async updateLambdaEnvironment(envVars: Record<string, string>): Promise<void> {
     try {
       const updateEnvResponse = await this.lambdaClient.send(new UpdateFunctionConfigurationCommand({
-        FunctionName: input.functionName,
+        FunctionName: this.functionName,
         Environment: {
           Variables: envVars,
         },
@@ -92,12 +93,11 @@ export class LambdaService {
 
   /**
    * Get Lambda function details
-   * @param functionName The Lambda function name
    * @returns null if the function is not found.
    */
-  public async getLambdaFunction(functionName: string): Promise<GetFunctionCommandOutput | null> {
+  public async getLambdaFunction(): Promise<GetFunctionCommandOutput | null> {
     try {
-      const command = new GetFunctionCommand({ FunctionName: functionName });
+      const command = new GetFunctionCommand({ FunctionName: this.functionName });
       return await this.lambdaClient.send(command);
     } catch (error: unknown) {
       if (error instanceof ResourceNotFoundException) {
@@ -107,5 +107,14 @@ export class LambdaService {
       this.logger.error('Error getLambdaFunction:', error);
       throw error;
     }
+  }
+
+  public async waitUntilFunctionUpdated(): Promise<WaiterResult> {
+    return waitUntilFunctionUpdated({
+      client: this.lambdaClient,
+      maxWaitTime: 60,
+    }, {
+      FunctionName: this.functionName,
+    });
   }
 }

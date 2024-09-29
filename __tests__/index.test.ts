@@ -7,21 +7,8 @@ jest.mock('@aws-sdk/client-route-53');
 const mockRoute53Client = Route53Client as jest.MockedClass<typeof Route53Client>;
 
 describe('DDNS handler', () => {
-  let consoleLogSpy: jest.SpyInstance;
-  let consoleErrorSpy: jest.SpyInstance;
-
   beforeEach(() => {
-    consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {
-    });
-    consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {
-    });
-
     jest.clearAllMocks();
-  });
-
-  afterEach(() => {
-    consoleLogSpy.mockRestore();
-    consoleErrorSpy.mockRestore();
   });
 
   it('should return error when hostname or IP is missing', async () => {

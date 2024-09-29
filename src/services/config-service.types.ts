@@ -2,12 +2,12 @@ import type { ResourceRecordSet } from '@aws-sdk/client-route-53/dist-types/mode
 
 export interface ConfigOptions {
   logLevel: number;
-  hostedZoneId: string;
-  dnsRecordName: string;
+  hostedZoneId?: string;
+  dnsRecordName?: string;
   dnsRecordTtl: number;
-  dnsRecordType: ResourceRecordSet['Type'];
-  authToken: string;
-  lambdaAwsRegion: string;
-  lambdaFunctionName: string;
-  lambdaExecutionRoleName: string;
+  dnsRecordType?: ResourceRecordSet['Type'];
+  authToken?: string;
+  lambdaAwsRegion?: string;
+  lambdaFunctionName?: string;
+  lambdaExecutionRoleName?: string;
 }

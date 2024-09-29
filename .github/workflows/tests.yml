@@ -1,0 +1,62 @@
+name: Tests
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '**.js'
+      - '**.ts'
+      - '**.tsx'
+      - '**.json'
+    branches:
+      - main
+  pull_request:
+    types: [ opened, synchronize, reopened, ready_for_review ]
+    paths:
+      - '**.js'
+      - '**.ts'
+      - '**.json'
+    branches:
+      - main
+      - develop
+
+jobs:
+  tests:
+    if: ${{ github.event.pull_request.draft == false }}
+    runs-on:
+      - ubuntu-latest
+    env:
+      NODE_VERSION: 20.x
+    steps:
+      - name: Testing [${{ github.ref_name }}] on node ${{ env.NODE_VERSION }}
+        uses: actions/checkout@v4
+
+      - name: Use Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          registry-url: https://npm.pkg.github.com/
+
+      - name: Install Dependencies
+        run: |
+          npm ci
+
+      - name: Run lint
+        run: |
+          npm run lint:ci
+
+      - name: Run test
+        run: |
+          npm run test:ci
+
+      - name: Notify
+        if: ${{ github.actor != 'dependabot[bot]' && always() }}
+        uses: 8398a7/action-slack@v3
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        with:
+          status: ${{ job.status }}
+          fields: repo,message,commit,author,job,took
+          job_name: 'Testing [${{ github.ref_name }}] on node ${{ env.NODE_VERSION }}'
+          author_name: 'Started by ${{ github.actor }}'

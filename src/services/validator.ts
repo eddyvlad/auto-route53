@@ -8,7 +8,7 @@ export class Validator {
   }
 
   public validateEventInput(event: APIGatewayProxyEvent): void {
-    const checkValues: Array<keyof APIGatewayProxyEvent> = ['hostname', 'myip', 'authToken'];
+    const checkValues: (keyof APIGatewayProxyEvent)[] = ['hostname', 'myip', 'authToken'];
     const errorFields: string[] = [];
 
     checkValues.forEach((valueKey) => {

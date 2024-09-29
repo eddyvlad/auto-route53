@@ -47,7 +47,7 @@ const updateEnvFile = (newToken: string): void => {
 
   envConfig = dotenv.parse(fs.readFileSync(envPath, 'utf-8'));
   // Update the APP_AUTH_TOKEN
-  envConfig['APP_AUTH_TOKEN'] = newToken;
+  envConfig.APP_AUTH_TOKEN = newToken;
 
   // Convert the updated configuration back to string
   const updatedEnv = Object.keys(envConfig)

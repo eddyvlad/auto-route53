@@ -5,7 +5,7 @@ describe('Validator', () => {
   let validator: Validator;
   beforeEach(() => {
     validator = new Validator({
-      validAuthToken: process.env.APP_AUTH_TOKEN as string,
+      validAuthToken: process.env.APP_AUTH_TOKEN!,
     });
   });
 

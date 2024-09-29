@@ -10,7 +10,7 @@ export class ResponseService {
     };
   }
 
-  public static error(errorMessage: string, statusCode: number = 400) {
+  public static error(errorMessage: string, statusCode = 400) {
     return {
       statusCode,
       body: JSON.stringify({

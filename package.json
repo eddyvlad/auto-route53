@@ -6,10 +6,11 @@
   "scripts": {
     "clean": "rm -rf dist",
     "build": "npm run clean && tsc",
-    "deploy": "esr scripts/deploy/deploy.ts",
+    "lint": "eslint",
     "test": "jest",
+    "generate-token": "esr scripts/generate-token.ts",
     "zip": "esr scripts/pack-zip.ts",
-    "generate-token": "esr scripts/generate-token.ts"
+    "deploy": "esr scripts/deploy/deploy.ts"
   },
   "author": "eddyvlad",
   "license": "MIT",

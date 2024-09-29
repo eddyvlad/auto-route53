@@ -13,9 +13,8 @@
     "isolatedModules": true,
     "resolveJsonModule": true
   },
-  "exclude": [
-    "__tests__",
-    "scripts",
-    "jest.config.ts"
+  "include": [
+    "index.ts",
+    "src/**/*.ts"
   ]
 }

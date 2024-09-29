@@ -11,11 +11,11 @@ export const services = {
   logger: new ConsoleLogger('deploy'),
   lambdaService: new LambdaService({
     region: configService.getLambdaAwsRegion(),
+    functionName: configService.getLambdaFunctionName(),
     logger: new ConsoleLogger('LambdaService'),
   }),
   iamService: new IamService({
     region: configService.getLambdaAwsRegion(),
-    logger: new ConsoleLogger('IamService'),
   }),
   configService,
 };

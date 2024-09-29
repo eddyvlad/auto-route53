@@ -1,7 +1,7 @@
 import * as Path from 'node:path';
 import dotenv, { DotenvPopulateInput } from 'dotenv';
 
-export default async () => {
+export default () => {
   dotenv.config({
     path: Path.resolve(__dirname, '../../.env.defaults'),
   });

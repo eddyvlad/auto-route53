@@ -41,7 +41,7 @@ export class DNSService {
         return null;
       }
 
-      return result.ResourceRecordSets[0].ResourceRecords[0].Value || null;
+      return result.ResourceRecordSets[0].ResourceRecords[0].Value ?? null;
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new Error(`Error fetching current record: ${error.message}`);

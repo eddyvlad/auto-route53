@@ -1,0 +1,18 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  release-please:
+    runs-on:
+      - self-hosted
+      - generic
+    steps:
+      - uses: google-github-actions/release-please-action@v4
+        with:
+          token: ${{ secrets.RF4_GITHUB_TOKEN }}
+          release-type: node
+          package-name: dam-service-packager
