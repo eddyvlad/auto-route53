@@ -38,9 +38,6 @@ export class ConfigService {
     return this.config.dnsRecordName;
   }
 
-  /**
-   * Defaults to 86400
-   */
   public getDnsRecordTtl(): number {
     return this.config.dnsRecordTtl;
   }
