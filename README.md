@@ -1,40 +1,40 @@
 # Auto Route53
 
-A dynamic DNS (DDNS) implementation for AWS Lambda that updates Route53 DNS records based on external IP changes.
+A dynamic DNS (DDNS) solution for AWS Lambda that updates Route53 DNS records based on external IP changes.
 
 ## Description
 
-`auto-route53` is a serverless application that automatically updates the DNS record for a specified domain in AWS Route 53 based on an external IP address. This is useful for maintaining a dynamic DNS (DDNS) setup where your external IP might change frequently.
+`auto-route53` is a serverless application that automatically updates DNS records for a domain in AWS Route 53 based on external IP address changes. It is ideal for maintaining dynamic DNS (DDNS) setups where your external IP may change frequently.
 
-The application is written in TypeScript, built with AWS SDK v3, and deployed on AWS Lambda.
+The application is written in TypeScript, uses AWS SDK v3, and is deployed on AWS Lambda.
 
 ## Features
 
-- Update Route 53 DNS records automatically.
-- Use auth token for security.
-  - In case your endpoint url is leaked, without the right auth token, a malicious user cannot manipulate your DNS record.
-  - It has built in token generator as well so that you can easily rotate your auth token for enhanced security.
-- Written in TypeScript for type safety & it is typed extensively.
-- Efficient packaging and deployment to AWS Lambda using `npm run zip` and `npm run deploy`.
-- Unit tests using Jest for maintaining code quality.
+- **Automated DNS Updates**: Automatically updates AWS Route 53 DNS records.
+- **Auth Token Security**: Protects the API endpoint with an auth token to prevent unauthorized DNS manipulation.
+  - Includes a built-in token generator for easy rotation of auth tokens.
+- **TypeScript**: Fully written in TypeScript for type safety and maintainability.
+- **Efficient Deployment**: Provides easy packaging and deployment to AWS Lambda using `npm run zip` and `npm run deploy`.
+- **Auth Token Helper**: Easily create a secure auth token with `npm run generate-token`.
+- **Unit Testing**: Includes unit tests written in Jest for maintaining code quality.
 
-## Running this app on AWS Lambda
+## Running on AWS Lambda
 
 ### Prerequisites
 
-- [An AWS account](https://aws.amazon.com/account/)
-- A domain hosted on AWS Route53
-- Assuming that you have the know-how of
+- [AWS Account](https://aws.amazon.com/account/)
+- A domain managed in AWS Route 53
+- Familiarity with:
   - Creating a Lambda function
-  - Creating AWS API Gateway Resources & integrating it with a Lambda function
+  - Creating AWS API Gateway Resources & integrating them with a Lambda function
 - Node.js (>=20.x.x)
 - npm (>=10.x.x)
 
 ### Easy Deploy Prerequisites
 
-If you want to use `npm run deploy` to easily create the Lambda function or update existing one, you need [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html#getting-started-install-instructions) (configured with appropriate credentials).
+To use `npm run deploy` for creating or updating the Lambda function, you will need the [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html#getting-started-install-instructions) configured with appropriate credentials.
 
-You also need the appropriate policies in your AWS IAM account to be able to deploy.
+Your AWS IAM account must also have the necessary permissions to deploy the Lambda function. Below is an example of the required policy:
 
 ```json
 {
@@ -54,16 +54,12 @@ You also need the appropriate policies in your AWS IAM account to be able to dep
     },
     {
       "Effect": "Allow",
-      "Action": [
-        "lambda:ListFunctions"
-      ],
+      "Action": ["lambda:ListFunctions"],
       "Resource": "*"
     },
     {
       "Effect": "Allow",
-      "Action": [
-        "iam:PassRole"
-      ],
+      "Action": ["iam:PassRole"],
       "Resource": "arn:aws:iam::<account-id>:role/<lambda-execution-role>"
     }
   ]
@@ -72,9 +68,7 @@ You also need the appropriate policies in your AWS IAM account to be able to dep
 
 #### Note
 
-The "lambda:CreateFunction" is optional. It is only needed if you want this application to automatically create the Lambda function for you.
-
-But in order to create a Lambda function, you also need permission to assign role to the Lambda function. So you will need the following as well.
+The `lambda:CreateFunction` permission is only needed if you want this application to create the Lambda function for you. To create a function, you also need the following permissions to assign the execution role:
 
 ```json
 {
@@ -89,82 +83,73 @@ But in order to create a Lambda function, you also need permission to assign rol
 }
 ```
 
-Note: If you think the role is too permissive due to the `*` wildcard, use `arn:aws:iam::<account-id>:role/lambda-route53-execution-role` but the `lambda-route53-execution-role` value should be the same as the `LAMBDA_EXECUTION_ROLE_NAME` value in `.env`.
+If this feels too permissive due to the wildcard `*`, you can narrow the scope to something like `arn:aws:iam::<account-id>:role/lambda-route53-execution-role`, ensuring that `lambda-route53-execution-role` matches the `LAMBDA_EXECUTION_ROLE_NAME` in the `.env` file.
 
 ### Installation
 
 #### Setup
 
-Clone the repository:
+1. Clone the repository:
 
-```bash
-git clone https://github.com/eddyvlad/auto-route53.git
-cd auto-route53
-```
+   ```bash
+   git clone https://github.com/eddyvlad/auto-route53.git
+   cd auto-route53
+   ```
 
-Install the dependencies:
+2. Install dependencies:
 
-```bash
-npm install
-```
+   ```bash
+   npm install
+   ```
 
-Configure `.env` file:
+3. Configure the environment:
 
-```bash
-cp .env.defaults .env
-```
+   ```bash
+   cp .env.defaults .env
+   ```
 
 ### Deployment
 
-The project includes an automated packaging and deployment workflow. It creates a `.zip` package ready for AWS Lambda and deploys it using the AWS CLI.
+The project includes a streamlined packaging and deployment workflow. This creates a `.zip` package ready for AWS Lambda and deploys it using the AWS CLI.
 
 1. **Package and Deploy**
 
-   To zip the project and deploy it to AWS Lambda, use:
+   To zip the project and deploy it to AWS Lambda, run:
 
    ```bash
    npm run zip
    npm run deploy
    ```
 
-   This will:
-
-- Build the project.
-- Pack the files into `lambda-deployment.zip` (excluding unnecessary files like dev dependencies).
-  - You can upload this zip directly to your Lambda function via the web console if you want.
-- Deploy the package to your AWS Lambda function
-  - This will check if you have existing Lambda function with the name configured in your `.env` file.
-  - If you don't have such function, it will create one for you.
-  - If the function already exists, it will update the code for you.
+   This process will:
+  - Build the project.
+  - Pack necessary files into `lambda-deployment.zip`, excluding dev dependencies and other unnecessary files.
+  - Deploy the package to AWS Lambda.
+    - If no existing Lambda function is found, it creates one.
+    - If the Lambda function already exists, it updates the function's code.
 
 ## Rationale
 
 **Why is it overbuilt?**
 
-I don't mind that it is overbuilt because it's meant for me to keep up with the coding standards, practices & various design patterns.
-Besides, I'm very used to implementing codes in a way that is easily transferable to a junior software engineer and the modularity allows for multiple engineers to work on the same project concurrently.
-This is a habit I picked up from leading a team of software engineers.
+This project may seem overbuilt, but it's intentional. It follows best practices for code quality, modularity, and developer experience (DevEx). The structure allows easy transferability to junior engineers, enabling multiple team members to work on the project concurrently.
 
-This is also why it has scripts to easily zip, deploy and even generate auth token. In a team setting, I want to be able to hand over this project to another team member and that team member to be able to continue this project with ease.
+The project includes automation scripts to simplify packaging, deployment, and auth token generation, ensuring that any team member can maintain it with minimal friction.
 
-This is part and parcel of DevEx (Developer Experience), which I am passionate about.
+If you're curious about DevEx, [this article](https://github.blog/enterprise-software/collaboration/developer-experience-what-is-it-and-why-should-you-care/) offers an excellent overview.
 
-This article best explains about developer experience.
-[Developer experience: What is it and why should you care?](https://github.blog/enterprise-software/collaboration/developer-experience-what-is-it-and-why-should-you-care/)
+**Why TypeScript?**
 
-**Why use typescript instead of just javascript?**
+The choice of TypeScript aligns with my goals for code clarity, type safety, and scalability in team settings.
 
-The same reason as to why it is overbuilt.
+**Why both esbuild and ts-node?**
 
-**Why have both esbuild & ts-node installed?**
+I'm experimenting with esbuild for faster builds, while ts-node is required for running `jest.config.ts`.
 
-I'm experimenting with esbuild & ts-node is needed to parse `jest.config.ts`.
+**Why not use esbuild for building?**
 
-**Why not build using esbuild?**
-
-Esbuild requires a plugin to do typecheck while building. I don't want to add this plugin because at the moment, I'm only using it to run typescript files.
+Esbuild requires an additional plugin for type checking during the build process. Since I am only using esbuild to run TypeScript files, I opted not to add this plugin for now.
 
 ## Known Issues
 
-Currently this project had been developed on MacOS 15 with NodeJS v20.10.0.
-It is not meant to run on Windows or Linux. Feel free to contribute to make this compatible for multiple OS.
+This project has been developed and tested on macOS 15 with Node.js v20.10.0. Compatibility with Windows or Linux has not been tested. Contributions to support multiple operating systems are welcome!
