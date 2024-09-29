@@ -111,7 +111,7 @@ npm install
 Configure `.env` file:
 
 ```bash
-cp .env.default .env
+cp .env.defaults .env
 ```
 
 ### Deployment

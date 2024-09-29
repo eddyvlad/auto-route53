@@ -1,16 +1,22 @@
 import { DNSService } from '../../src/services/dns-service';
 import { DNSServiceConfig } from '../../src/services/dns-service.types';
 import {
-  Route53Client,
   ChangeResourceRecordSetsCommand,
   ListResourceRecordSetsCommand,
 } from '@aws-sdk/client-route-53';
 
-jest.mock('@aws-sdk/client-route-53', () => ({
-  Route53Client: jest.fn(),
-  ChangeResourceRecordSetsCommand: jest.fn(),
-  ListResourceRecordSetsCommand: jest.fn(),
-}));
+// Mocking Route53Client and its send method
+const mockSend = jest.fn(); // Create a mock function for send
+
+jest.mock('@aws-sdk/client-route-53', () => {
+  return {
+    Route53Client: jest.fn(() => ({
+      send: mockSend, // Use the mocked send function
+    })),
+    ChangeResourceRecordSetsCommand: jest.fn(),
+    ListResourceRecordSetsCommand: jest.fn(),
+  };
+});
 
 describe('DNSService', () => {
   let dnsService: DNSService;
@@ -23,7 +29,9 @@ describe('DNSService', () => {
       dnsRecordTtl: 300,
       dnsRecordType: 'A',
     };
+
     dnsService = new DNSService(mockConfig);
+    mockSend.mockReset(); // Reset mock state before each test
   });
 
   it('should fetch the current DNS record', async () => {
@@ -33,7 +41,8 @@ describe('DNSService', () => {
       ],
     };
 
-    (Route53Client.prototype.send as jest.Mock).mockResolvedValueOnce(mockResponse);
+    // Mock the send method to resolve with mockResponse
+    mockSend.mockResolvedValueOnce(mockResponse);
 
     const result = await dnsService.getCurrentRecord();
     expect(result).toBe('1.1.1.1');
@@ -43,7 +52,8 @@ describe('DNSService', () => {
   it('should update the DNS record', async () => {
     const mockResult = { ChangeInfo: { Status: 'PENDING' } };
 
-    (Route53Client.prototype.send as jest.Mock).mockResolvedValueOnce(mockResult);
+    // Mock the send method to resolve with mockResult
+    mockSend.mockResolvedValueOnce(mockResult);
 
     const result = await dnsService.updateDnsRecord('2.2.2.2');
     expect(result).toBe('PENDING');

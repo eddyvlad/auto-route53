@@ -5,7 +5,7 @@ describe('Validator', () => {
   let validator: Validator;
   beforeEach(() => {
     validator = new Validator({
-      validAuthToken: process.env.VALIDATOR_ACCESS_TOKEN as string,
+      validAuthToken: process.env.APP_AUTH_TOKEN as string,
     });
   });
 
@@ -17,6 +17,16 @@ describe('Validator', () => {
     };
 
     expect(() => validator.validateEventInput(validEvent)).not.toThrow();
+  });
+
+  it('should reject invalid token', () => {
+    const validEvent: APIGatewayProxyEvent = {
+      hostname: 'test-hostname',
+      myip: '1.1.1.1',
+      authToken: 'fake-token',
+    };
+
+    expect(() => validator.validateEventInput(validEvent)).toThrow();
   });
 
   it('should throw an error if input is missing', () => {

@@ -11,5 +11,6 @@ export default async (): Promise<Config> => {
     },
     globalSetup: '<rootDir>/__tests__/setup-teardown/global.setup.ts',
     globalTeardown: '<rootDir>/__tests__/setup-teardown/global.teardown.ts',
+    testMatch: ['<rootDir>/__tests__/**/*.test.ts'],
   };
 };

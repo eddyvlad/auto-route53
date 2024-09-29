@@ -3,3 +3,4 @@ lambda-deployment.zip
 /dist/
 *.tgz
 /.env
+/coverage/
