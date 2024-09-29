@@ -10,9 +10,9 @@
     "prettier:check": "prettier . --check .",
     "lint": "eslint",
     "test": "jest",
-    "generate-token": "esr scripts/generate-token.ts",
-    "zip": "esr scripts/pack-zip.ts",
-    "deploy": "esr scripts/deploy/deploy.ts"
+    "generate-token": "node -r ts-node/register scripts/generate-token.ts",
+    "zip": "node -r ts-node/register scripts/pack-zip.ts",
+    "deploy": "node -r ts-node/register scripts/deploy/deploy.ts"
   },
   "author": "eddyvlad",
   "license": "MIT",
@@ -22,7 +22,6 @@
   },
   "files": [
     "dist/",
-    "node_modules/",
     "package.json"
   ],
   "devDependencies": {
@@ -31,8 +30,6 @@
     "@eslint/js": "^9.11.1",
     "@types/eslint__js": "^8.42.3",
     "@types/jest": "^29.5.13",
-    "esbuild": "^0.24.0",
-    "esbuild-runner": "^2.2.2",
     "eslint": "^9.11.1",
     "eslint-config-prettier": "^9.1.0",
     "jest": "^29.7.0",

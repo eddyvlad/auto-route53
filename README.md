@@ -138,14 +138,6 @@ If you're curious about DevEx, [this article](https://github.blog/enterprise-sof
 
 The choice of TypeScript aligns with my goals for code clarity, type safety, and scalability in team settings.
 
-**Why both esbuild and ts-node?**
-
-I'm experimenting with esbuild for faster builds, while ts-node is required for running `jest.config.ts`.
-
-**Why not use esbuild for building?**
-
-Esbuild requires an additional plugin for type checking during the build process. Since I am only using esbuild to run TypeScript files, I opted not to add this plugin for now.
-
 ## Known Issues
 
 This project has been developed and tested on macOS 15 with Node.js v20.10.0. Compatibility with Windows or Linux has not been tested. Contributions to support multiple operating systems are welcome!
