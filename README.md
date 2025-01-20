@@ -6,7 +6,7 @@ A dynamic DNS (DDNS) solution for AWS Lambda that updates Route53 DNS records ba
 
 `auto-route53` is a serverless application that automatically updates DNS records for a domain in AWS Route 53 based on external IP address changes. It is ideal for maintaining dynamic DNS (DDNS) setups where your external IP may change frequently.
 
-The application is written in TypeScript, uses AWS SDK v3, and is deployed on AWS Lambda.
+The application is written in TypeScript, uses AWS SDK v3, and is deployed on AWS Lambda and meant to be integrated with AWS API Gateway.
 
 ## Features
 
@@ -17,6 +17,8 @@ The application is written in TypeScript, uses AWS SDK v3, and is deployed on AW
 - **Efficient Deployment**: Provides easy packaging and deployment to AWS Lambda using `npm run zip` and `npm run deploy`.
 - **Auth Token Helper**: Easily create a secure auth token with `npm run generate-token`.
 - **Unit Testing**: Includes unit tests written in Jest for maintaining code quality.
+
+![lambda-test-run-result.png](docs/images/lambda-test-run-result.png)
 
 ## Running on AWS Lambda
 

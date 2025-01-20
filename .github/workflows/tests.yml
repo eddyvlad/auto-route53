@@ -11,7 +11,7 @@ on:
     branches:
       - main
   pull_request:
-    types: [ opened, synchronize, reopened, ready_for_review ]
+    types: [opened, synchronize, reopened, ready_for_review]
     paths:
       - '**.js'
       - '**.ts'
@@ -43,6 +43,7 @@ jobs:
           npm ci
 
       - name: Run prettier
+        run: |
           npm run prettier:check
 
       - name: Run lint
